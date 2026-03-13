@@ -819,9 +819,9 @@
         }
     }
 
-    function repeat(char, n) {
+    function repeat(ch, n) {
         var s = "";
-        for (var i = 0; i < n; i++) { s += char; }
+        for (var i = 0; i < n; i++) { s += ch; }
         return s;
     }
 
