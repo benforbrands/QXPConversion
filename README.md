@@ -20,6 +20,31 @@ detection, font auditing, and a detailed conversion report.
 | **Operating system** | macOS or Windows |
 | **QuarkXPress file version** | QXP 3.3 – 4.x (InDesign CS4–CC 2018) · QXP 5 – 9.x (InDesign CC 2018 only) |
 
+---
+
+## InDesign version compatibility
+
+The script works natively (no extras needed) on these InDesign versions:
+
+| InDesign version | App version | QXP files it opens |
+|---|---|---|
+| CS4 | v6 | QXP 3.3 – 6.x |
+| CS5 / CS5.5 | v7 – v7.5 | QXP 3.3 – 7.x |
+| CS6 | v8 | QXP 3.3 – 8.x |
+| CC (2013 – 2018) | v9 – v13 | QXP 3.3 – 9.x |
+| **CC 2019+ (v14+)** | v14 and above | **Not supported natively — see below** |
+
+> Many studios, print shops, and agencies keep an older InDesign install for exactly
+> this kind of legacy file work. If you have CS6 or CC 2013–2018 anywhere on your
+> network, this script will handle the conversion fully — link resolution, font
+> checking, and saving included.
+
+> **Bonus:** If you have Markzware Q2ID installed on any InDesign version, that
+> plug-in restores QXD open support. This script then handles everything Q2ID
+> doesn't — link resolution, overflow checking, font auditing, and saving.
+
+---
+
 > ### InDesign CC 2019 and later (v14+)
 > **Adobe removed the built-in QuarkXPress Converter plug-in from InDesign CC 2019.**
 > If you are on a modern InDesign (2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026…)
@@ -133,7 +158,7 @@ the original source file.
 
 | Issue | Notes |
 |---|---|
-| QXP 5–9 on older InDesign | Requires InDesign CC 2019+ or a third-party converter |
+| QXP 5–9 | Requires InDesign CS5+ (v7+) for QXP 5–7, CS6+ for QXP 8, CC 2013–2018 for QXP 9 |
 | QXP 2015+ formats | Not supported by the built-in plug-in |
 | Xtension-dependent content | Interactive widgets, proprietary Xtension objects may be lost |
 | Colour profiles | ICC profile assignments are migrated but should be verified |
