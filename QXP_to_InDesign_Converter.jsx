@@ -2,6 +2,10 @@
 // QXP_to_InDesign_Converter.jsx
 // Adobe InDesign ExtendScript — QuarkXPress to InDesign Conversion Utility
 //
+// Created by Ben for Brands
+// https://www.benforbrands.co.uk
+// https://tools.benforbrands.co.uk
+//
 // VERSION: 1.2.0
 // COMPATIBILITY: Adobe InDesign CS4 / CC and later
 //

@@ -1,5 +1,11 @@
 # QXP → InDesign Converter
 
+**Created by [Ben for Brands](https://www.benforbrands.co.uk)**
+Tools and resources for brand, print, and design professionals.
+→ [benforbrands.co.uk](https://www.benforbrands.co.uk) · [tools.benforbrands.co.uk](https://www.tools.benforbrands.co.uk)
+
+---
+
 An Adobe InDesign ExtendScript that converts QuarkXPress `.qxd` / `.qxt` files
 to native InDesign `.indd` format — with automatic link resolution, text-overflow
 detection, font auditing, and a detailed conversion report.
@@ -166,3 +172,18 @@ QXPConversion/
 ## License
 
 MIT — free for personal and commercial use. No warranty expressed or implied.
+
+---
+
+## About Ben for Brands
+
+This script is one of a growing collection of free tools for designers and
+brand professionals published by **Ben for Brands**.
+
+- **[benforbrands.co.uk](https://www.benforbrands.co.uk)** — brand strategy,
+  design, and print consultancy
+- **[tools.benforbrands.co.uk](https://www.tools.benforbrands.co.uk)** — free tools
+  and resources for brand and design work
+
+If this script saved you time, feel free to share it and link back — it helps
+others in the design community find it too.
