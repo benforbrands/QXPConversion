@@ -16,15 +16,21 @@ detection, font auditing, and a detailed conversion report.
 
 | Requirement | Detail |
 |---|---|
-| **Adobe InDesign** | CS4 or later (CC recommended) |
-| **QXP Converter plug-in** | Included in InDesign CS4+. For QXP 5–9 files use InDesign CC 2019+ |
+| **Adobe InDesign** | CS4 through CC 2018 for native conversion · CC 2019+ needs a plug-in (see below) |
 | **Operating system** | macOS or Windows |
-| **QuarkXPress version** | QXP 3.3 – 4.x (all InDesign versions) · QXP 5 – 9.x (InDesign CC 2019+) |
+| **QuarkXPress file version** | QXP 3.3 – 4.x (InDesign CS4–CC 2018) · QXP 5 – 9.x (InDesign CC 2018 only) |
 
-> **Need to convert QXP 2015/2016/2017/2019/2020/2023 files?**
-> These newer formats are not supported by InDesign's built-in converter.
-> Consider **[Markzware Q2ID](https://markzware.com/products/q2id/)** or the
-> **Quark IDXT** export plug-in, then rerun this script on the resulting QXD.
+> ### InDesign CC 2019 and later (v14+)
+> **Adobe removed the built-in QuarkXPress Converter plug-in from InDesign CC 2019.**
+> If you are on a modern InDesign (2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026…)
+> the script will detect this on launch and show you the three options below.
+> You do **not** need an older InDesign — just pick one of these routes first:
+>
+> | Option | What to do | Cost |
+> |---|---|---|
+> | **1. Markzware Q2ID** | Install the Q2ID plug-in in your InDesign. Converts QXD files directly inside InDesign. | ~$199 |
+> | **2. Quark IDXT (free)** | In QuarkXPress, install the free Quark IDXT plug-in, then export: *File ▸ Export ▸ Layout as Project… ▸ IDML*. Open the `.idml` in InDesign. | Free |
+> | **3. Older InDesign** | Open the QXD in InDesign CS4–CC 2018, run this script, then open the saved `.indd` in your modern InDesign. | Free |
 
 ---
 

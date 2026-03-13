@@ -6,8 +6,10 @@
 // https://www.benforbrands.co.uk
 // https://tools.benforbrands.co.uk
 //
-// VERSION: 1.2.0
-// COMPATIBILITY: Adobe InDesign CS4 / CC and later
+// VERSION: 1.3.0
+// COMPATIBILITY: Adobe InDesign CS4 through CC 2018 (native QXP open support)
+//               InDesign CC 2019 / v14+ detected automatically — a clear
+//               "what to do instead" dialog is shown on launch.
 //
 // INSTALLATION:
 //   Place this file in your InDesign Scripts folder:
@@ -18,11 +20,13 @@
 //   Window > Utilities > Scripts — double-click this script to run.
 //
 // REQUIREMENTS:
-//   • The QuarkXPress Converter plug-in must be installed in InDesign.
-//     (Included by default in InDesign CS4+. For QXP 7–2020 files you may
-//      need Markzware's Q2ID or the official Quark IDXT exporter instead.)
-//   • QXD/QXT files up to QuarkXPress 4.x are supported natively.
-//     InDesign CC (2019+) supports up to QXP 9.x with the built-in converter.
+//   InDesign CS4–CC 2018  : Works natively. The built-in QXP Converter opens
+//                           QXD/QXT files up to QuarkXPress 4.x (CS4) or 9.x (CC 2018).
+//   InDesign CC 2019+     : Adobe removed the QXP Converter plug-in. The script
+//                           detects this and shows alternatives:
+//                           (a) Markzware Q2ID plug-in (markzware.com/products/q2id/)
+//                           (b) Export IDML from QuarkXPress via the free Quark IDXT plug-in
+//                           (c) Use an older InDesign installation
 //
 // WHAT IT DOES:
 //   1. Lets you pick one or more .qxd / .qxt files (or a whole folder).
@@ -41,7 +45,11 @@
     // CONSTANTS & CONFIG
     // -------------------------------------------------------------------------
 
-    var VERSION = "1.2.0";
+    var VERSION = "1.3.0";
+
+    // InDesign version from which Adobe removed the built-in QXP Converter plug-in.
+    // CC 2019 = v14.0. Anything at or above this will not be able to open QXD files natively.
+    var INDESIGN_LAST_QXP_VERSION = 14;
 
     var SEARCH_SUBFOLDERS = true;   // hunt for missing links inside sub-folders
     var MAX_SEARCH_DEPTH  = 4;      // max folder depth for link searching
@@ -77,6 +85,9 @@
             return;
         }
 
+        // Warn immediately if this InDesign version cannot open QXD files natively.
+        if (!preflightVersionCheck()) { return; }
+
         if (!showWelcomeDialog()) { return; }
 
         var files = selectFiles();
@@ -94,6 +105,85 @@
         }
 
         showReport(report);
+    }
+
+    // =========================================================================
+    // PRE-FLIGHT VERSION CHECK
+    // =========================================================================
+
+    function preflightVersionCheck() {
+        var majorVersion = parseInt(app.version.split(".")[0], 10);
+        var isBlocked    = majorVersion >= INDESIGN_LAST_QXP_VERSION;
+
+        if (!isBlocked) { return true; } // CS4–CC 2018: native converter present, proceed
+
+        // Build a clear, actionable dialog rather than letting things fail silently later.
+        var dlg = new Window("dialog", "QXP \u2192 InDesign  \u2014  Important Notice");
+        dlg.alignChildren = "fill";
+        dlg.margins = 22;
+        dlg.preferredSize.width = 560;
+
+        var hdr = dlg.add("group");
+        hdr.orientation = "column";
+        hdr.alignChildren = "left";
+        hdr.spacing = 6;
+
+        hdr.add("statictext", undefined,
+            "Adobe removed the built-in QuarkXPress Converter in InDesign CC 2019.");
+        hdr.add("statictext", undefined,
+            "Your version (" + app.version + ") cannot open .qxd files natively.");
+        hdr.add("statictext", undefined, " ");
+        hdr.add("statictext", undefined, "You have three paths forward:");
+
+        var panel1 = dlg.add("panel", undefined, "Option 1  \u2014  Best quality  (Markzware Q2ID plug-in)");
+        panel1.alignChildren = "left";
+        panel1.margins = 12;
+        panel1.add("statictext", undefined,
+            "Install the Markzware Q2ID plug-in for InDesign. It converts QXP files");
+        panel1.add("statictext", undefined,
+            "directly inside InDesign without needing QuarkXPress installed.");
+        panel1.add("statictext", undefined,
+            "Cost: ~$199 one-time. URL: markzware.com/products/q2id/");
+
+        var panel2 = dlg.add("panel", undefined, "Option 2  \u2014  Free  (requires QuarkXPress on your Mac)");
+        panel2.alignChildren = "left";
+        panel2.margins = 12;
+        panel2.add("statictext", undefined,
+            "Open the .qxd in QuarkXPress, then export via:");
+        panel2.add("statictext", undefined,
+            "File \u25b8 Export \u25b8 Layout as Project\u2026  and choose IDML format");
+        panel2.add("statictext", undefined,
+            "(requires Quark\u2019s free IDXT plug-in \u2014 search: Quark IDXT InDesign).");
+        panel2.add("statictext", undefined,
+            "Open the resulting .idml file in InDesign \u2014 it will convert automatically.");
+
+        var panel3 = dlg.add("panel", undefined, "Option 3  \u2014  Quick workaround  (PDF round-trip)");
+        panel3.alignChildren = "left";
+        panel3.margins = 12;
+        panel3.add("statictext", undefined,
+            "In QuarkXPress: File \u25b8 Export as PDF, then place the PDF in InDesign.");
+        panel3.add("statictext", undefined,
+            "Text will not be editable, but layout and images are preserved for reference.");
+
+        dlg.add("statictext", undefined, " ");
+        var note = dlg.add("statictext", undefined,
+            "You can still run this script after converting via Option 1 or 2 \u2014");
+        dlg.add("statictext", undefined,
+            "it will handle link resolution, font checking, and saving for you.");
+
+        var btnGrp = dlg.add("group");
+        btnGrp.alignment = "right";
+        var tryAnywayBtn = btnGrp.add("button", undefined, "Try Anyway");
+        var closeBtn     = btnGrp.add("button", undefined, "Close", { name: "ok" });
+
+        tryAnywayBtn.helpTip = "Attempt to open the file regardless (will likely fail on this InDesign version)";
+
+        var result = false;
+        tryAnywayBtn.onClick = function () { result = true;  dlg.close(); };
+        closeBtn.onClick     = function () { result = false; dlg.close(); };
+
+        dlg.show();
+        return result;
     }
 
     // =========================================================================
@@ -117,9 +207,9 @@
         grp.add("statictext", undefined, " ");
 
         grp.add("statictext", undefined, "Requirements:");
-        addBullet(grp, "InDesign CS4 or later with the QXP Converter plug-in.");
-        addBullet(grp, "For QXP 5-9 files: InDesign CC 2019+ (built-in) or");
-        addBullet(grp, "  Markzware Q2ID / Quark IDXT plug-in.");
+        addBullet(grp, "InDesign CS4 \u2013 CC 2018: works natively.");
+        addBullet(grp, "InDesign CC 2019+ (v14+): needs Markzware Q2ID plug-in");
+        addBullet(grp, "  OR an IDML export from QuarkXPress (free Quark IDXT plug-in).");
         addBullet(grp, "Linked images accessible at their original paths.");
 
         grp.add("statictext", undefined, " ");
@@ -356,19 +446,23 @@
         } catch (e) {
             var msg = e.message || String(e);
 
-            if (/plug.?in|converter/i.test(msg)) {
+            // InDesign CC 2019+ (v14+) no longer ships the QXP Converter plug-in.
+            // The error message will mention "plug-in" or "file format" — either way
+            // the root cause and the fix are the same.
+            if (/plug.?in|format|support/i.test(msg)) {
                 result.errors.push(
-                    "QuarkXPress Converter plug-in is not installed or not active. " +
-                    "For QXP 5+ files consider Markzware Q2ID. Details: " + msg
-                );
-            } else if (/format|version|corrupt/i.test(msg)) {
-                result.errors.push(
-                    "File format not supported or file is corrupt. " +
-                    "InDesign natively supports QXP up to v4.x (CS4) or v9.x (CC 2019+). " +
-                    "Details: " + msg
+                    "InDesign cannot open this QXD file. " +
+                    "The built-in QuarkXPress Converter was removed in InDesign CC 2019. " +
+                    "To convert: (1) Install Markzware Q2ID (markzware.com/products/q2id/), " +
+                    "(2) Export IDML from QuarkXPress using the free Quark IDXT plug-in, or " +
+                    "(3) Open in an older InDesign (pre-CC 2019). " +
+                    "Raw error: " + msg
                 );
             } else {
-                result.errors.push("Could not open file: " + msg);
+                result.errors.push(
+                    "Could not open file. Raw error: " + msg + " — " +
+                    "If this is a file-format error, see above options for QXD conversion."
+                );
             }
 
             return null;
